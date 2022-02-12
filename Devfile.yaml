@@ -11,8 +11,10 @@ metadata:
   projectType: 'quarkus'
   language: 'java'
 starterProjects:
-  - name: community
+  - name: quarkus-restapi-starter
     git:
+      checkoutFrom:
+        revision: main
       remotes:
         origin: https://github.com/rprakashg/quarkus=restapi-starter.git
 components:
