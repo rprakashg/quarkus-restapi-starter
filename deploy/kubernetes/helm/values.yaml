@@ -1,0 +1,13 @@
+namespace: ossm
+deployment:
+  name: sampleapp-v1
+  replicas: 1
+app:
+  name: sampleapp
+  version: v1
+  istioAutoInject: true
+  containerImage: ""
+  ports:
+  - name: http
+    port: 8080
+imagePullPolicy: Always

@@ -3,7 +3,7 @@ metadata:
   name: quarkus-restapi-starter
   version: 0.0.1
   provider: rprakashg
-  website: https://rprakashg.github.cio
+  website: https://rprakashg.github.io
   displayName: quarkus restapi
   description: Rest APIs in Quarkus with Java
   icon: https://design.jboss.org/quarkus/logo/final/SVG/quarkus_icon_rgb_default.svg
@@ -37,17 +37,26 @@ components:
         image:
           memoryLimit: 512Mi
           mountSources: true
+  - name: k8s
+    kubernetes:
+      uri:
 
 commands:
-  - id: compile
+  - id: build
     exec:
       component: mvn
       commandLine: 'mvn -Dmaven.repo.local=/home/user/.m2/repository compile'
+      group:
+        kind: build
+        isDefault: true
       workingDir: $PROJECTS_ROOT
   - id: test
     exec:
       component: mvn
       commandLine: './mvnw verify -Dquarkus.http.test-host=1.2.3.4 -Dquarkus.http.test-port=4321'
+      group:
+        kind: test
+        isDefault: true
       workingDir: $PROJECTS_ROOT
   - id: run
     exec:
@@ -67,5 +76,18 @@ commands:
         kind: debug
         isDefault: true
       workingDir: $PROJECTS_ROOT
+  - id: buildtestrun
+    exec:
+      composite:
+        commands:
+          - build
+          - test
+          - run
+      group:
+        kind: run
+        isDefault: true
+events:
+  postStart:
+    - build
 
 
