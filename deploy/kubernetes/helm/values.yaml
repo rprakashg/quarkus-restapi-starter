@@ -2,11 +2,19 @@ namespace: ossm
 deployment:
   name: sampleapp-v1
   replicas: 1
+  annotations:
+  - key: "app.kubernetes.io/managed-by"
+    value: "Helm"
+  - key: "meta.helm.sh/release-name"
+    value: "sampleapp-v1"
+  - key: "meta.helm.sh/release-namespace"
+    value: "ossm"
 app:
   name: sampleapp
   version: v1
   istioAutoInject: true
-  containerImage: ""
+  containerImage: image-registry.openshift-image-registry.svc:5000/ossm/sampleapp:v1
+  labels: []
   ports:
   - name: http
     port: 8080

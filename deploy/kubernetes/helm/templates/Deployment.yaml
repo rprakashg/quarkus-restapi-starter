@@ -16,9 +16,15 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/inject: {{ .Values.app.istioAutoInject }}
+        {{- range $k, $v := .Values.deployment.annotations }}
+        {{ $v.key }}: {{ $v.value }}
+        {{- end }}
       labels:
         app: {{ .Values.app.name }}
         version: {{ .Values.app.version }}
+        {{- range $k, $v := .Values.app.labels }}
+        {{ $v.name }}: {{ $v.text }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Values.app.name }}
@@ -27,4 +33,4 @@ spec:
           ports:
           {{- range .Values.app.ports }}
           - containerPort: {{ .port -}}
-          { { - end } }
+          {{- end}}

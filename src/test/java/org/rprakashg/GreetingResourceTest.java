@@ -8,10 +8,10 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-public class GreetingResourceTest {
+class GreetingResourceTest {
 
     @Test
-    public void testHelloEndpoint() {
+    void testHelloEndpoint() {
         String expected = "Hello ram";
 
         Greeting got = given()

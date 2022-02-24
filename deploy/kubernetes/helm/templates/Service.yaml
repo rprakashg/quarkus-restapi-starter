@@ -8,9 +8,10 @@ metadata:
     service: {{ .Values.app.name }}
 spec:
   ports:
-  {{- range $k, $v := .Values.app.ports }}
-  - port: {{ $k }}_{{ $v.port }}
-    name: {{ $k }}_{{ $v.name }}
-  { { - end } }
+    {{- range $k, $v := .Values.app.ports }}
+    - port: {{ $v.port }}
+      name: {{ $v.name }}
+    {{- end }}
   selector:
     app: {{ .Values.app.name }}
+    version: {{ .Values.app.version }}

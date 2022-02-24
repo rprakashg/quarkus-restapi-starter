@@ -1,0 +1,98 @@
+commands:
+- exec:
+    commandLine: ./mvnw -Dmaven.repo.local=/home/user/.m2/repository compile
+    component: mvn
+    workingDir: $PROJECTS_ROOT
+  id: compile
+- exec:
+    commandLine: ./mvnw clean verify sonar:sonar
+    component: mvn
+    workingDir: $PROJECTS_ROOT
+  id: analyze
+- exec:
+    commandLine: ./mvnw clean package -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+      -Dquarkus.native.container-runtime=podman
+    component: sonarqube
+    workingDir: $PROJECTS_ROOT
+  id: package
+- exec:
+    commandLine: ./mvnw verify -Dquarkus.http.test-host=1.2.3.4 -Dquarkus.http.test-port=4321
+    component: mvn
+    workingDir: $PROJECTS_ROOT
+  id: rununittests
+- exec:
+    commandLine: ./mvnw -Dmaven.repo.local=/home/user/.m2/repository quarkus:dev -Dquarkus.http.host=0.0.0.0
+      -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+    component: mvn
+    group:
+      kind: run
+    hotReloadCapable: true
+    workingDir: $PROJECTS_ROOT
+  id: run
+- exec:
+    commandLine: mvn -Dmaven.repo.local=/home/user/.m2/repository quarkus:dev -Dquarkus.http.host=0.0.0.0
+      -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Ddebug=${DEBUG_PORT}
+    component: mvn
+    group:
+      kind: debug
+    hotReloadCapable: true
+    workingDir: $PROJECTS_ROOT
+  id: debug
+- composite:
+    commands:
+    - compile
+    - analyze
+    - rununittests
+    - package
+  id: build
+components:
+- container:
+    endpoints:
+    - name: http
+      targetPort: 8080
+    image: registry.access.redhat.com/ubi8/openjdk-11
+    memoryLimit: 512Mi
+    mountSources: true
+    env:
+      - name: SONAR_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: sonar-credentials
+            key: TOKEN
+      - name: SONAR_HOST
+        valueFrom:
+          secretKeyRef:
+            name: sonar-credentials
+            key: HOST_URL
+    volumeMounts:
+    - name: m2
+      path: /home/user/.m2
+  name: mvn
+- name: m2
+  volume:
+    size: 3Gi
+events:
+  postStart:
+  - compile
+metadata:
+  description: Rest APIs in Quarkus with Java
+  displayName: quarkus restapi
+  icon: https://design.jboss.org/quarkus/logo/final/SVG/quarkus_icon_rgb_default.svg
+  language: java
+  name: quarkus-restapi-starter
+  projectType: quarkus
+  tags:
+  - Java
+  - Quarkus
+  - Rest
+  - Api
+  version: 0.0.1
+  website: https://rprakashg.github.io
+schemaVersion: 2.2.0
+starterProjects:
+- git:
+    checkoutFrom:
+      revision: main
+    remotes:
+      origin: https://github.com/rprakashg/quarkus=restapi-starter.git
+  name: quarkus-restapi-starter
