@@ -4,8 +4,8 @@ metadata:
   namespace: {{ .Values.namespace }}
   name: {{ .Values.app.name }}
   labels:
-    app: {{ .Values.app.name | squote }}
-    service: {{ .Values.app.name | squote }}
+    app: {{ .Values.app.name }}
+    service: {{ .Values.app.name }}
 spec:
   ports:
     {{- range $k, $v := .Values.app.ports }}
@@ -13,5 +13,5 @@ spec:
       name: {{ $v.name }}
     {{- end }}
   selector:
-    app: {{ .Values.app.name | squote }}
-    version: {{ .Values.app.version | squote }}
+    app: {{ .Values.app.name }}
+    version: {{ .Values.app.version }}
